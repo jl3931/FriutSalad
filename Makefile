@@ -17,11 +17,11 @@ fruit/sim/Fruit.class: fruit/sim/*.java
 
 .PHONY: rungui
 rungui:
-	java fruit.sim.Fruit players.list 12 fruit.sim.UniformFruitGenerator true
+	java -ea fruit.sim.Fruit players.list 12 fruit/g2/hitandmiss.txt true
 
 .PHONY: run
 run:
-	java fruit.sim.Fruit players.list 12 fruit.sim.UniformFruitGenerator false
+	java -ea fruit.sim.Fruit players.list 12 uniform.txt false
 
 .PHONY: clean
 clean:
