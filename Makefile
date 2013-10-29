@@ -14,6 +14,10 @@ rungui:
 run:
 	java -ea fruit.sim.Fruit players.list 12 uniform.txt false
 
+.PHONY: runtour
+runtour:
+	java -ea fruit.sim.Fruit players.list 12 uniform.txt false false $(n)
+
 .PHONY: clean
 clean:
 	$(RM) fruit/sim/*.class
