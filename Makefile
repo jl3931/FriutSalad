@@ -8,7 +8,7 @@ fruit/sim/Fruit.class: fruit/sim/*.java
 
 .PHONY: rungui
 rungui:
-	java -ea fruit.sim.Fruit players.list 12 fruit/g2/hitandmiss.txt true
+	java -ea fruit.sim.Fruit players.list 12 uniform.txt true
 
 .PHONY: run
 run:
@@ -16,7 +16,7 @@ run:
 
 .PHONY: runtour
 runtour:
-	java -ea fruit.sim.Fruit players.list 12 uniform.txt false false $(n)
+	java -ea fruit.sim.Fruit players.list 12 $(dist) false false $(n)
 
 .PHONY: clean
 clean:
