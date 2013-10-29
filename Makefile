@@ -7,15 +7,15 @@ fruit/sim/Fruit.class: fruit/sim/*.java
 	javac $^
 
 .PHONY: rungui
-rungui:
+rungui: all
 	java -ea fruit.sim.Fruit players.list 12 uniform.txt true
 
 .PHONY: run
-run:
+run: all
 	java -ea fruit.sim.Fruit players.list 12 uniform.txt false
 
 .PHONY: runtour
-runtour:
+runtour: all
 	java -ea fruit.sim.Fruit players.list 12 $(dist) false false $(n)
 
 .PHONY: clean
