@@ -487,7 +487,7 @@ public class Fruit
     }
 
 
-    private void play(boolean gui) throws Exception{
+    private void play(boolean gui, fruit.g2.Stat stat) throws Exception{
         BufferedReader buffer = null;
 
         HTTPServer server = null;
@@ -539,6 +539,7 @@ public class Fruit
                 }
 
                 int[] bowl = createBowl();
+                stat.add(bowl);
                 System.err.println(Arrays.toString(bowl));
                 currentBowl = bowl;
                 
@@ -771,6 +772,8 @@ public class Fruit
         
         String[] playerNames = loadPlayerNames(playerPath);
         int totalScores[] = new int[playerNames.length];
+        int[] pref = {1,2,3,4,5,6,7,8,9,10,11,12};
+        fruit.g2.Stat stat = new fruit.g2.Stat(playerNames.length, pref);
 
         for (int r = 0; r < repeats; ++r) {
             Player[] players = loadPlayers(playerPath);
@@ -783,13 +786,15 @@ public class Fruit
             int[] dist = createServingBowl(distPath, bowlsize * players.length);
 
             Fruit game = new Fruit(players, bowlsize, dist);
-            game.play(gui);
+            game.play(gui, stat);
             
             for (int p = 0; p < players.length; ++p) {
                 totalScores[players[p].id] += game.scores[p];
             }
         }
-
+        String[] tokens = distPath.split("\\.(?=[^\\.]+$)");
+        String basename = tokens[0];
+        stat.dump(basename+ "_" + repeats);
 
         // print aggregate score
         System.err.println("###### Tournament result ######");
