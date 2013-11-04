@@ -1,4 +1,4 @@
-package fruit.g2;
+package fruit.g10;
 
 import java.util.*;
 
@@ -22,7 +22,7 @@ public class Player extends fruit.sim.Player
         npassed = 0;
         round = 0;
         picked  = false;
-        this.distribution = new Distribution(stat, stat.getNFruits);
+        this.distribution = new Distribution(stat, nplayers);
     }
 
     public boolean pass(int[] bowl, int bowlId, int round,
@@ -38,14 +38,14 @@ public class Player extends fruit.sim.Player
             this.round = 1;
         }
         assert(round == this.round);
-        assert(picked != canPick);
+        //assert(picked != canPick);
         // already picked
         if (picked)
             return false;
         // must take
         if (choiceLeft() == 1) {
             if (!picked) {
-                assert(mustTake);
+               // assert(mustTake);
                 picked = true;
                 return true;
             }
@@ -53,10 +53,23 @@ public class Player extends fruit.sim.Player
         // otherwise find chiSquare distribution
         else {
         // determine 1st estimate of distribution
-            int[] fruitEstimate = estimateDistribution(stat.history, round);
-            System.out.println(fruitEstimate);
-    	    double chiSquare = stat.chiSquare(bowl, fruitEstimate);
-            System.out.println(chiSquare);
+            double[] fruitEstimate = distribution.estimateDistribution(stat.getHistory(), npassed-1);
+            double[] fruitBowlEstimate = new double[12];
+            for(int i=0; i<fruitEstimate.length; i++){
+                fruitBowlEstimate[i] = fruitEstimate[i]/nplayers;
+                System.out.println("|" + fruitBowlEstimate[i]);
+            }
+    	    double chiSquare = stat.chiSquare(bowl, fruitBowlEstimate);
+            System.out.println("HERE IS CHI SQUARE" + chiSquare);
+        // if it is a decent estimate, calculate the expected value, except bowl if higher than that value
+            if(stat.decentEstimate(chiSquare)){
+                //calulate weighted average
+                double weightedSum = 0.0;
+                for(int i=0; i<pref.length;i++){
+                    weightedSum += fruitEstimate[i] * pref[i];
+                }
+                return stat.score(round) >= weightedSum;
+            }
         }
         return false;
     }

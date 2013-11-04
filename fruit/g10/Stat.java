@@ -1,8 +1,7 @@
-package fruit.g2;
+package fruit.g10;
 
 import java.util.*;
 import java.io.*;
-import com.objectspace.jgl.*;
 import java.util.Enumeration;
 
 public class Stat {
@@ -13,7 +12,8 @@ public class Stat {
     private int nfruits;
     private int[] pref;
     private int nround;
-    private HashMap chiSquareTable = new HashMap();
+    private HashMap<Double,Double> chiSquareTable = new HashMap<Double,Double>();
+    final double LOWEST_DESIRED_CHI = .750;
     
     public Stat(int nplayers, int[] pref) {
         history = new LinkedList<int[]>();
@@ -23,11 +23,12 @@ public class Stat {
         nkindfruits = pref.length;
         nfruits = 0;
         nround = 0;
-        map.add( new Double( .995 ), new Double( 2.603 ) );
-        map.add( new Double( .990 ), new Double( 3.053 ) );
-        map.add( new Double( .975 ), new Double( 3.816 ) );
-        map.add( new Double( .950 ), new Double( 4.575 ) );
-        map.add( new Double( .900 ), new Double( 5.578 ) );
+        chiSquareTable.put( new Double( .995 ), 2.603);
+        chiSquareTable.put( new Double( .990 ), new Double( 3.053 ) );
+        chiSquareTable.put( new Double( .975 ), new Double( 3.816 ) );
+        chiSquareTable.put( new Double( .950 ), new Double( 4.575 ) );
+        chiSquareTable.put( new Double( .900 ), new Double( 5.578 ) );
+        chiSquareTable.put( new Double( .750 ), new Double( 7.584 ) );
     }
 
     public int getNFruits(){
@@ -123,13 +124,24 @@ public class Stat {
         return sum;
     }
 
-    public double chiSquare(int[] bowl, int[] expectedDistribution){
+    // Chi Square distribution - assumes normal distribution
+    // sums together all (observed - expecte values)/ expected value
+    public double chiSquare(int[] bowl, double[] expectedDistribution){
         double chiSqaureSum = 0;
         for(int i=0; i< bowl.length; i++ ){
             double observedMinusExpected = bowl[i] - expectedDistribution[i];
-            chiSqaureSum += Math.pow(observedMinusExpected,2.0)/expectedDistribution[i] ;
+            chiSqaureSum += Math.pow(observedMinusExpected, 2.0)/(expectedDistribution[i]+.0000001) ;
         } 
         return chiSqaureSum;
+    }
+
+    //If according to the Chi Square chart the estimate is a good one
+    public boolean decentEstimate(double chiSquareSum){
+        return chiSquareSum <= (chiSquareTable.get(LOWEST_DESIRED_CHI) + 1);  
+    }
+
+    public LinkedList<int[]> getHistory(){
+        return history;
     }
 
 }

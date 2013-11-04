@@ -29,6 +29,7 @@ public class Player extends fruit.sim.Player
         npassed++;
         stat.add(bowl);
 	System.out.println("choice left: " + choiceLeft() + " can pick " + canPick);
+    System.out.println("choice left: " + choiceLeft() + " can pick " + canPick);
         if (choiceLeft() == 0 && this.round == 0) {
             // beginning of second round
             assert(picked);
