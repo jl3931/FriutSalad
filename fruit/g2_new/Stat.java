@@ -104,11 +104,12 @@ public class Stat {
 	
 	//new method. returns standard deviation of points based on stdev of all fruits
 	public double stdevBasedOnFruits(){
-		double stdev = 0;
+		double stdevSum = 0;
 		double[] fruitSDs = computeFruitStdevs();
 		for (int i = 0; i < 12; i++){
-			stdev += (fruitSDs[i]*(pref[i]*1.0));
+			stdevSum += Math.pow((fruitSDs[i]*(pref[i]*1.0)),2);
 		}
+		double stdev = Math.sqrt(stdevSum);
 		return stdev;
 	}
 
