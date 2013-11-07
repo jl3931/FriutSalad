@@ -1,4 +1,4 @@
-package fruit.g2;
+package fruit.g2_new;
 
 import java.util.*;
 import java.io.*;
