@@ -1,4 +1,4 @@
-package fruit.g2;
+package fruit.g2_new;
 
 import java.util.*;
 import java.io.*;
@@ -63,15 +63,17 @@ public class Player extends fruit.sim.Player
                 return true;
             }
         }
-	else if (stat.stdev()<=0.1*stat.getNFruits()){
+		
+		/*I removed this case for now, feel free to edit and put back in if you would like
+		else if (stat.stdev()<=0.1*stat.getNFruits()){
 		return false;  	
-	}
+		}*/
  
         // otherwise look for avg + std
         else {
 	    double coeff = getCoeff(choiceLeft());
-	    System.out.println("Score to take: " + (stat.average() + coeff*adjustedStdDev(stat.stdev())));
-            if (stat.score(npassed-1) < stat.average() + coeff*adjustedStdDev(stat.stdev()))
+	    System.out.println("Score to take: " + (stat.averageScoreBasedOnFruits() + coeff*adjustedStdDev(stat.stdevBasedOnFruits())));
+            if (stat.score(npassed-1) < stat.averageScoreBasedOnFruits() + coeff*adjustedStdDev(stat.stdevBasedOnFruits()))
                 return false;
             else {
                 picked = true;

@@ -1,9 +1,12 @@
-all: fruit/sim/Fruit.class fruit/g2/player.class fruit/g10/player.class
+all: fruit/sim/Fruit.class fruit/g2/player.class fruit/g10/player.class fruit/g2_new/player.class
 
 fruit/g2/player.class: fruit/g2/*.java fruit/sim/Player.java
 	javac $^
 
 fruit/g10/player.class: fruit/g10/*.java fruit/sim/Player.java
+	javac $^
+
+fruit/g2_new/player.class: fruit/g2_new/*.java fruit/sim/Player.java
 	javac $^
 
 fruit/sim/Fruit.class: fruit/sim/*.java
