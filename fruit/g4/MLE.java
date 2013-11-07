@@ -11,7 +11,7 @@ class MLE {
   public MLE(int numFruitsPer, int nplayers){
     numPlayers = nplayers;
     numFruitsPerBowl = numFruitsPer;
-    occuranceHist = new int[NUM_FRUIT_TYPES][numFruitsPerBowl];
+    occuranceHist = new int[NUM_FRUIT_TYPES][numFruitsPerBowl + 1];
     random = new Random();
   }
 
@@ -26,10 +26,10 @@ class MLE {
     int diff = Math.abs(mean - sample);
 
     // .46 + 2(.22) + 2(.04) + 2(0.01) = 1.0
-    if (diff == 0) return 0.46f;
-    else if (diff == 1) return 0.22f;
-    else if (diff == 2) return 0.04f;
-    else if (diff == 3) return 0.01f;
+    if (diff == 0) return 1.0f;
+    //else if (diff == 1) return 0.22f;
+    //else if (diff == 2) return 0.04f;
+    //else if (diff == 3) return 0.01f;
     return 0f;
   }
 
@@ -42,17 +42,15 @@ class MLE {
   }
 
   public float fruitOccuranceMLE(int fruit) {
-    float[] gaussianArr = new float[numFruitsPerBowl];
-    for (int i = 0; i < numFruitsPerBowl; i++){
-      for (int j = 0; j < numFruitsPerBowl; j++){ //TODO: just loop across 3 on each side
-        gaussianArr[i] += gaussian(fruit, j) * occuranceHist[fruit][j];
-      }
+    float[] gaussianArr = new float[numFruitsPerBowl + 1];
+    for (int i = 0; i < occuranceHist[0].length; i++){
+      gaussianArr[i] += gaussian(i, i) * occuranceHist[fruit][i];
     }
-    return Vectors.maxIndex(gaussianArr);
+    return Vectors.sum(gaussianArr) / gaussianArr.length;
   }
 
   // Get MLE for a platter by inferring from bowls that youve seen
-  private float[] platter(){
+  public float[] platter(){
     return Vectors.scale(
       distribution(),
       (float) (numPlayers * numFruitsPerBowl)
@@ -67,28 +65,27 @@ class MLE {
     return num;
   }
 
-  //TODO: Sample many bowls in same way that sim does, return the average
   public float[] bowl(boolean firstRound){
-    // Count
-    float[] plat = platter();
-    for (int i = 0; i < plat.length; i++){
-      if (firstRound)
-        plat[i] -= numOccurances(i);
-      else
-        // If second round, we have occurances from first, so dont subtract them
-        plat[i] -= numOccurances(i) / 2;
+    float[] averageBowl = new float[NUM_FRUIT_TYPES];
+    float[] platter = platter();
+    System.out.println(Arrays.toString(platter));
+    for (int i = 0; i < 1000; i++) {
+      float[] tempPlatter = platter.clone();
+      float[] tempBowl = simulateBowl(tempPlatter);
+      for (int j = 0; j < NUM_FRUIT_TYPES; j++) {
+        averageBowl[j] += tempBowl[j];
+      }
     }
-    return Vectors.scale(
-      Vectors.normalize(plat),
-      (float) numFruitsPerBowl
-    );
+    for (int i = 0; i < NUM_FRUIT_TYPES; i++) {
+      averageBowl[i] = averageBowl[i] / 1000;
+    }
+    return averageBowl;
   }
 
   // simulates the picking of a bowl taking into account clustering and returns the score of the bowl
-  private float[] simulateBowl() {
+  private float[] simulateBowl(float[] currentFruits) {
     float[] bowl = new float[NUM_FRUIT_TYPES];
     int sz = 0;
-    float[] currentFruits = platter();
     while (sz < numFruitsPerBowl) {
       // pick a fruit according to current fruit distribution
       int fruit = pickFruit(currentFruits); 
@@ -107,8 +104,9 @@ class MLE {
     // generate a prefix sum
     float[] prefixsum = new float[NUM_FRUIT_TYPES];
     prefixsum[0] = currentFruits[0];
-    for (int i = 1; i != NUM_FRUIT_TYPES; ++i)
+    for (int i = 1; i != NUM_FRUIT_TYPES; ++i) {
       prefixsum[i] = prefixsum[i-1] + currentFruits[i];
+    }
 
     float currentFruitCount = prefixsum[NUM_FRUIT_TYPES - 1];
     // roll a dice [0, currentFruitCount)
@@ -121,6 +119,13 @@ class MLE {
     assert false;
 
     return -1;
+  }
+
+  public int mostCanSee(int fruit){
+    return Math.min(
+      (int) Math.max(Math.ceil(platter()[fruit]), 0),
+      (int) numFruitsPerBowl
+    );
   }
 
 
