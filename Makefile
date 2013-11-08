@@ -1,9 +1,6 @@
-all: fruit/sim/Fruit.class fruit/g2/player.class fruit/g10/player.class fruit/g2_new/player.class
+all: fruit/sim/Fruit.class fruit/g2/player.class fruit/g2_new/player.class
 
 fruit/g2/player.class: fruit/g2/*.java fruit/sim/Player.java
-	javac $^
-
-fruit/g10/player.class: fruit/g10/*.java fruit/sim/Player.java
 	javac $^
 
 fruit/g2_new/player.class: fruit/g2_new/*.java fruit/sim/Player.java
@@ -22,7 +19,7 @@ run: all
 
 .PHONY: runtour
 runtour: all
-	java -ea fruit.sim.Fruit players.list 12 $(dist) false false $(n)
+	java fruit.sim.Fruit players.list 12 $(dist) false false $(n)
 
 .PHONY: clean
 clean:
@@ -30,5 +27,3 @@ clean:
 	$(RM) fruit/g2/*.class
 	$(RM) fruit/g2/*~
 	$(RM) fruit/dumb/*.class
-	$(RM) fruit/g10/*.class
-	$(RM) fruit/g10/*~

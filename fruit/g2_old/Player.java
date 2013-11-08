@@ -65,9 +65,19 @@ public class Player extends fruit.sim.Player
         }
         // otherwise look for avg + std
         else {
-	    double coeff = getCoeff(choiceLeft());
-	    System.out.println("Score to take: " + (stat.average() + coeff*adjustedStdDev(stat.stdev())));
-            if (stat.score(npassed-1) < stat.average() + coeff*adjustedStdDev(stat.stdev()))
+	    int average = stat.average();
+	    if (round == 1 && npassed*bowlSize >36){
+		int fullScore = average * nplayers;
+		int newRoundIndex = nplayers - getIndex();
+		for (i = newRoundIndex; i < npassed; i++){
+		     fullScore -= stat.score(i);
+		}
+		int newAverage = fullScore/(nplayers-npassed+newRoundIndex);			if(newAverage<average)
+			average = newAverage;
+	    }		    	
+		double coeff = getCoeff(choiceLeft());
+	    System.out.println("Score to take: " + (average + coeff*adjustedStdDev(stat.stdev())));
+            if (stat.score(npassed-1) < average + coeff*adjustedStdDev(stat.stdev()))
                 return false;
             else {
                 picked = true;

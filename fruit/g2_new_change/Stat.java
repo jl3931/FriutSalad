@@ -87,7 +87,7 @@ public class Stat {
 				double difference = currentBowl[i] - currentFruitAverage;
 				sum += Math.pow(difference,2);
 			}
-			fruitStdevs[i] = Math.sqrt(sum/(history.size()-1));
+			fruitStdevs[i] = Math.sqrt(sum/(history.size()));
 		}
 		return fruitStdevs;
 	}

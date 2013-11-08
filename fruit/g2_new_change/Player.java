@@ -99,11 +99,10 @@ public class Player extends fruit.sim.Player
 
     public double adjustedStdDev(double stdev){
 
- /*    int numfruits = stat.getNFruits();
+    int numfruits = stat.getNFruits();
      double influence = Math.pow(.5, (double)npassed-1);
-     return influence*numfruits+(1-influence)*stdev;
-*/
-     return Math.sqrt(stat.getNFruits()*bowlSize);
+     return influence*(Math.sqrt(numfruits*bowlSize))+(1-influence)*stdev;
+
     }
 
     private int choiceLeft() {
